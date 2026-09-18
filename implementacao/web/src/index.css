@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Tokens do tema. Todo o visual sai daqui: os dois temas trocam apenas estes
+ * valores, e nenhum componente conhece cor literal. --mod e a cor da modalidade
+ * aberta, injetada pela ModalityPage via style inline.
+ */
+@layer base {
+  :root,
+  [data-theme='light'] {
+    --bg: #f4f5f7;
+    --s1: #ffffff;
+    --s2: #f8f9fb;
+    --s3: #f1f3f6;
+    --bd: #e2e5ea;
+    --bd2: #edeff3;
+    --ink1: #10151b;
+    --ink2: #414b57;
+    --ink3: #5c6672;
+    --hot-fg: #a81a4b;
+    --hot-bg: #fdeff4;
+    --hot-bd: #f2c2d5;
+    --cold-fg: #0a5f9c;
+    --cold-bg: #edf5fd;
+    --cold-bd: #bfdcf5;
+    --late-fg: #8a5a05;
+    --late-bg: #fdf6e8;
+    --late-bd: #f0ddb2;
+    --hit-bg: #0f9d63;
+    --hit-fg: #ffffff;
+    --pos: #0c7f52;
+    --neg: #bb3434;
+    --sh: 0 1px 2px rgba(16, 21, 27, 0.05);
+    --shz: 0 18px 48px rgba(16, 21, 27, 0.18);
+    /* fallback: sobrescrito pela modalidade aberta */
+    --mod: #209869;
+    --mod-on: #ffffff;
+  }
+
+  [data-theme='dark'] {
+    --bg: #0c0f12;
+    --s1: #14181c;
+    --s2: #181d22;
+    --s3: #1e242a;
+    --bd: #272e35;
+    --bd2: #20262c;
+    --ink1: #e9edf1;
+    --ink2: #a7b1bd;
+    --ink3: #77828f;
+    --hot-fg: #ff96b5;
+    --hot-bg: rgba(255, 80, 130, 0.13);
+    --hot-bd: rgba(255, 120, 160, 0.32);
+    --cold-fg: #7fc4ff;
+    --cold-bg: rgba(60, 160, 255, 0.13);
+    --cold-bd: rgba(110, 180, 255, 0.3);
+    --late-fg: #f2c679;
+    --late-bg: rgba(230, 170, 60, 0.13);
+    --late-bd: rgba(240, 190, 90, 0.3);
+    --hit-bg: #0f9d63;
+    --hit-fg: #ffffff;
+    --pos: #4fd39a;
+    --neg: #ff8f8f;
+    --sh: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shz: 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink1);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Numero alinha por digito em tabela e em toda metrica. */
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Numero e metrica vao em mono; texto de interface fica na sans. */
+  .num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .card {
+    border: 1px solid var(--bd);
+    border-radius: 0.75rem;
+    background: var(--s1);
+    box-shadow: var(--sh);
+    padding: 0.875rem;
+  }
+
+  .scroll-area {
+    @apply overflow-auto overscroll-contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 130, 143, 0.45) transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scroll-area::-webkit-scrollbar-track,
+  .scroll-area::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9px;
+    background: rgba(120, 130, 143, 0.45);
+    background-clip: content-box;
+  }
+
+  /* Rotulo de secao: o menor texto do sistema, sempre em caixa alta. */
+  .label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+  }
+
+  .table-head-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--s1);
+    border-bottom: 1px solid var(--bd);
+    font-size: 9.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink3);
+  }
+
+  .table-row {
+    border-bottom: 1px solid var(--bd2);
+  }
+
+  .table-row:hover {
+    background: var(--s2);
+  }
+
+  .input {
+    width: 100%;
+    height: 30px;
+    border: 1px solid var(--bd);
+    border-radius: 0.625rem;
+    background: var(--s1);
+    padding: 0 0.625rem;
+    font-size: 12.5px;
+    color: var(--ink1);
+    outline: none;
+  }
+
+  .input:focus {
+    border-color: var(--mod);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--mod) 22%, transparent);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50;
+    border: 1px solid transparent;
+    border-radius: 0.4375rem;
+    padding: 7px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+
+  /* Acao principal neutra: a cor da modalidade fica reservada ao volante. */
+  .btn-primary {
+    @apply btn;
+    background: var(--ink1);
+    color: var(--s1);
+  }
+
+  .btn-ghost {
+    @apply btn;
+    border-color: var(--bd);
+    background: var(--s1);
+    color: var(--ink1);
+  }
+
+  .btn-ghost:hover {
+    background: var(--s2);
+  }
+
+  /* Acao que confirma dentro do contexto de uma modalidade. */
+  .btn-mod {
+    @apply btn;
+    background: var(--mod);
+    color: var(--mod-on);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* Abas como pilulas dentro de uma barra, nao sublinhado. */
+  .tab {
+    @apply inline-flex items-center gap-2;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background: transparent;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink2);
+    cursor: pointer;
+  }
+
+  .tab:hover {
+    background: var(--s2);
+  }
+
+  .tab-active {
+    border-color: var(--bd);
+    background: var(--s3);
+    color: var(--ink1);
+  }
+
+  .pill {
+    border: 1px solid var(--bd);
+    border-radius: 9999px;
+    background: var(--s1);
+    padding: 6px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink2);
+    cursor: pointer;
+  }
+
+  .pill-active {
+    border-color: transparent;
+    background: var(--mod);
+    color: var(--mod-on);
+  }
+}

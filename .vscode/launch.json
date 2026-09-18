@@ -1,0 +1,48 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API (uvicorn, com breakpoint)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "${workspaceFolder}/api",
+      "python": "${workspaceFolder}/api/.venv/Scripts/python.exe",
+      "env": {
+        "DATABASE_URL": "postgresql+psycopg://lotto:lotto@localhost:5432/lottolab",
+        "CORS_ORIGINS": "http://localhost:5173",
+        "LOG_LEVEL": "DEBUG"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Testes: arquivo aberto",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-vv"],
+      "cwd": "${workspaceFolder}/api",
+      "python": "${workspaceFolder}/api/.venv/Scripts/python.exe",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Front (Chrome no painel)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/web/src",
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Stack local (API + Front)",
+      "configurations": ["API (uvicorn, com breakpoint)", "Front (Chrome no painel)"],
+      "preLaunchTask": "db: subir Postgres",
+      "stopAll": true
+    }
+  ]
+}

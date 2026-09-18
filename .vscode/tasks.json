@@ -1,0 +1,85 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "stack: subir tudo",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "stack: derrubar",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": []
+    },
+    {
+      "label": "stack: logs da API",
+      "type": "shell",
+      "command": "docker compose logs -f api",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "db: subir Postgres",
+      "type": "shell",
+      "command": "docker compose up -d db",
+      "problemMatcher": []
+    },
+    {
+      "label": "front: dev server",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/web" },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE",
+          "endsPattern": "ready in"
+        }
+      }
+    },
+    {
+      "label": "back: testes",
+      "type": "shell",
+      "command": "${workspaceFolder}/api/.venv/Scripts/python.exe -m pytest -q",
+      "options": { "cwd": "${workspaceFolder}/api" },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "back: ruff e mypy",
+      "type": "shell",
+      "command": "${workspaceFolder}/api/.venv/Scripts/python.exe -m ruff check app tests; ${workspaceFolder}/api/.venv/Scripts/python.exe -m mypy app",
+      "options": { "cwd": "${workspaceFolder}/api" },
+      "problemMatcher": []
+    },
+    {
+      "label": "front: testes, lint e build",
+      "type": "shell",
+      "command": "npm run test; npm run lint; npm run build",
+      "options": { "cwd": "${workspaceFolder}/web" },
+      "problemMatcher": []
+    },
+    {
+      "label": "back: criar migration",
+      "type": "shell",
+      "command": "${workspaceFolder}/api/.venv/Scripts/python.exe -m alembic revision --autogenerate -m \"${input:migrationName}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": { "DATABASE_URL": "postgresql+psycopg://lotto:lotto@localhost:5432/lottolab" }
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "migrationName",
+      "type": "promptString",
+      "description": "Descricao da migration"
+    }
+  ]
+}

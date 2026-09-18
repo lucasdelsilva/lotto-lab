@@ -1,0 +1,96 @@
+### Requisicoes prontas para a extensao REST Client.
+### Clique em "Send Request" acima de cada bloco.
+
+@base = http://localhost:8000/api
+@modality = MEGA_SENA
+
+### Health
+GET {{base}}/health
+
+### Regras da modalidade
+GET {{base}}/modalities/{{modality}}/rules
+
+### Custo de um volante de 10 dezenas
+GET {{base}}/modalities/{{modality}}/pricing/preview?n=10&games=1
+
+### Tabela completa de precos
+GET {{base}}/modalities/{{modality}}/pricing/table
+
+### Importar planilha (ajuste o caminho do arquivo)
+POST {{base}}/modalities/{{modality}}/draws:import
+Content-Type: multipart/form-data; boundary=----LottoLab
+
+------LottoLab
+Content-Disposition: form-data; name="file"; filename="mega.xlsx"
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+< ./mega.xlsx
+------LottoLab--
+
+### Ultimo concurso importado
+GET {{base}}/modalities/{{modality}}/draws/latest
+
+### Concursos paginados
+GET {{base}}/modalities/{{modality}}/draws?limit=10&offset=0
+
+### Lotes de importacao
+GET {{base}}/modalities/{{modality}}/import-batches
+
+### Analise completa
+GET {{base}}/modalities/{{modality}}/analysis
+
+### Recalcular ignorando o cache
+GET {{base}}/modalities/{{modality}}/analysis?refresh=true
+
+### Estatistica por dezena
+GET {{base}}/modalities/{{modality}}/analysis/numbers
+
+### Faixas de padroes
+GET {{base}}/modalities/{{modality}}/analysis/patterns
+
+### Co-ocorrencia e lift
+GET {{base}}/modalities/{{modality}}/analysis/pairs
+
+### Gerar jogos
+# @name geracao
+POST {{base}}/modalities/{{modality}}/games:generate
+Content-Type: application/json
+
+{
+  "numbers_per_game": 7,
+  "games": 3,
+  "profile": "balanced",
+  "seed": 42,
+  "budget_limit": 300.00,
+  "filters": { "on_already_drawn": "flag" }
+}
+
+### Detalhamento do primeiro jogo do lote acima
+GET {{base}}/games/{{geracao.response.body.games[0].id}}/insight
+
+### Lote completo
+GET {{base}}/game-batches/{{geracao.response.body.batch_id}}
+
+### Leitura da IA sobre o lote
+POST {{base}}/game-batches/{{geracao.response.body.batch_id}}/ai-review
+
+### Registrar aposta a partir de um jogo gerado
+POST {{base}}/bets
+Content-Type: application/json
+
+{
+  "game_id": "{{geracao.response.body.games[0].id}}",
+  "contest_no": 300
+}
+
+### Conferir apostas pendentes
+POST {{base}}/bets:check
+Content-Type: application/json
+
+{ "modality": "{{modality}}" }
+
+### Apostas registradas
+GET {{base}}/bets?limit=20
+
+### Resumo financeiro
+GET {{base}}/bets/summary
